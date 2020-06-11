@@ -4,8 +4,10 @@ const mongoose = require('mongoose');
 const plantSchema = new mongoose.Schema({
     commonName: String,
     botanicalName: String,
-    // family: String,
-    // nativeTo: String
+    family: String,
+    nativeTo: String
+}, {
+    timestamps: true
 });
   
 
