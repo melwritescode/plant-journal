@@ -15,7 +15,7 @@ const getAllPlants = (req, res) => {
   });
 };
 
-router.route('/plants')
+router.route('/')
   .post(createPlant)
   .get(getAllPlants);
 
