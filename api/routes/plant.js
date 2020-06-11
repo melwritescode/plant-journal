@@ -10,7 +10,7 @@ const createPlant = (req, res) => {
 
 const getAllPlants = (req, res) => {
   Plant.find({})
-  .then((plants) => {
+  .then(plants => {
     res.json(plants)
   });
 };
