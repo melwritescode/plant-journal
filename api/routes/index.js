@@ -3,6 +3,5 @@ const journalEntry = require('./journalEntry');
 
 module.exports = {
   plant,
-  journalEntry
+  journalEntry,
 };
-
