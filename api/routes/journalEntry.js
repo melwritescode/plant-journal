@@ -27,7 +27,7 @@ const getOneEntry = (req, res, next) => {
     });
 };
 
-router.route('/').get(getAllEntries);
+router.route('/').post(createEntry).get(getAllEntries);
 
 router.route('/:id').get(getOneEntry);
 
