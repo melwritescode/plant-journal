@@ -15,7 +15,9 @@ const createPlant = async (req, res, next) => {
 
 const getAllPlants = async (req, res, next) => {
   try {
-    const plants = await Plant.find({}).exec();
+    const plants = await Plant.find({})
+      .orFail(new Error('There are no plants in this garden, yet.'))
+      .exec();
     res.json(plants);
     return plants;
   } catch (err) {
