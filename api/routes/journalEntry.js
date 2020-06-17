@@ -1,30 +1,40 @@
 const router = require('express').Router();
 const JournalEntry = require('../../models/journalEntry');
 
-const createEntry = (req, res, next) => {
-  const newEntry = req.body;
-  JournalEntry(newEntry).save((err, entry) => {
+const createEntry = async (req, res, next) => {
+  try {
+    const newEntry = req.body;
+    const entry = await JournalEntry(newEntry).save();
     res.json(entry);
-  });
+    return entry;
+  } catch (err) {
+    err.status = 400;
+    next(err);
+  }
 };
 
-const getAllEntries = (req, res, next) => {
-  JournalEntry.find({})
-    .populate('plant')
-    .then((entries) => res.json(entries));
+const getAllEntries = async (req, res, next) => {
+  try {
+    const entries = await JournalEntry.find({}).populate('plant').exec();
+    res.json(entries);
+    return entries;
+  } catch (err) {
+    err.status = 400;
+    next(err);
+  }
 };
 
-const getOneEntry = (req, res, next) => {
-  JournalEntry.findOne({ _id: req.params.id })
-    .populate('plant')
-    .then((entry) => {
-      res.json(entry);
-    })
-    .catch((err) => {
-      err.message = 'Invalid journal id.';
-      err.status = 400;
-      next(err);
-    });
+const getOneEntry = async (req, res, next) => {
+  try {
+    const entry = await JournalEntry.findOne({ _id: req.params.id }).populate(
+      'plant'
+    );
+    res.json(entry);
+    return entry;
+  } catch (err) {
+    err.status = 400;
+    next(err);
+  }
 };
 
 router.route('/').post(createEntry).get(getAllEntries);
