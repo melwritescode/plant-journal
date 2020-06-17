@@ -1,22 +1,29 @@
 const router = require('express').Router();
 const Plant = require('../../models/plant');
 
-const createPlant = (req, res) => {
-  const newPlant = req.body;
-  Plant(newPlant).save((err, plant) => {
+const createPlant = async (req, res, next) => {
+  try {
+    const newPlant = req.body;
+    const plant = await Plant(newPlant).save();
     res.json(plant);
-  });
+    return plant;
+  } catch (err) {
+    err.status = 400;
+    next(err);
+  }
 };
 
-const getAllPlants = (req, res) => {
-  Plant.find({})
-  .then(plants => {
-    res.json(plants)
-  });
+const getAllPlants = async (req, res, next) => {
+  try {
+    const plants = await Plant.find({}).exec();
+    res.json(plants);
+    return plants;
+  } catch (err) {
+    err.status = 400;
+    next(err);
+  }
 };
 
-router.route('/')
-  .post(createPlant)
-  .get(getAllPlants);
+router.route('/').post(createPlant).get(getAllPlants);
 
 module.exports = router;

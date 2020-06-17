@@ -26,9 +26,9 @@ const getAllEntries = async (req, res, next) => {
 
 const getOneEntry = async (req, res, next) => {
   try {
-    const entry = await JournalEntry.findOne({ _id: req.params.id }).populate(
-      'plant'
-    );
+    const entry = await JournalEntry.findOne({ _id: req.params.id })
+      .populate('plant')
+      .exec();
     res.json(entry);
     return entry;
   } catch (err) {
