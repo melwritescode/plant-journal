@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Plant = require('../../models/plant');
+const { ErrorHandler } = require('../../helpers/error');
 
 const createPlant = async (req, res, next) => {
   try {
@@ -16,7 +17,7 @@ const createPlant = async (req, res, next) => {
 const getAllPlants = async (req, res, next) => {
   try {
     const plants = await Plant.find({})
-      .orFail(new Error('There are no plants in this garden, yet.'))
+      .orFail(new ErrorHandler(404, 'There are no plants in this garden, yet.'))
       .exec();
     res.json(plants);
     return plants;

@@ -1,8 +1,10 @@
 const express = require('express');
 const app = express();
 const bodyparser = require('body-parser');
-const routes = require('./api/routes');
+
 const db = require('./models/db');
+const routes = require('./api/routes');
+const { handleError } = require('./helpers/error');
 
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
@@ -15,8 +17,8 @@ app.use('/api/plants', routes.plant);
 app.use('/api/journal', routes.journalEntry);
 
 app.use((err, req, res, next) => {
-  if (!err.status) err.status = 500;
-  res.status(err.status).send({ error: err.message });
+  console.log(`ERROR: ${err}`);
+  handleError(err, res);
 });
 
 app.listen(3000);
