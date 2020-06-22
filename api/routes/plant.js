@@ -22,7 +22,6 @@ const getAllPlants = async (req, res, next) => {
     res.json(plants);
     return plants;
   } catch (err) {
-    err.status = 400;
     next(err);
   }
 };

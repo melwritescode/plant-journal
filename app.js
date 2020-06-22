@@ -17,7 +17,6 @@ app.use('/api/plants', routes.plant);
 app.use('/api/journal', routes.journalEntry);
 
 app.use((err, req, res, next) => {
-  console.log(`ERROR: ${err}`);
   handleError(err, res);
 });
 

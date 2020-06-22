@@ -36,7 +36,6 @@ const getAllEntriesForOnePlant = async (req, res, next) => {
     res.json(entries);
     return entries;
   } catch (err) {
-    err.status = 400;
     next(err);
   }
 };
@@ -50,7 +49,6 @@ const getOneEntry = async (req, res, next) => {
     res.json(entry);
     return entry;
   } catch (err) {
-    err.status = 400;
     next(err);
   }
 };

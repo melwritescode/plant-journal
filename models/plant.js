@@ -3,9 +3,16 @@ const mongoose = require('mongoose');
 // Create a schema
 const plantSchema = new mongoose.Schema(
   {
-    commonName: String,
-    botanicalName: String,
+    genus: {
+      type: String,
+      required: true,
+    },
+    species: String,
     family: String,
+    commonName: {
+      type: String,
+      required: true,
+    },
     nativeTo: String,
   },
   {
