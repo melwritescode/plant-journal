@@ -5,13 +5,13 @@ const plantSchema = new mongoose.Schema(
   {
     genus: {
       type: String,
-      required: true,
+      required: [true, 'Genus is required.'],
     },
     species: String,
     family: String,
     commonName: {
       type: String,
-      required: true,
+      required: [true, 'Common name is required.'],
     },
     nativeTo: String,
   },

@@ -3,7 +3,7 @@ const router = require('express').Router();
 const Plant = require('../../models/plant');
 const { ErrorHandler } = require('../../helpers/error');
 
-// GET /plants
+// GET /api/plants
 const getAllPlants = async (req, res, next) => {
   try {
     const plants = await Plant.find({})
@@ -16,7 +16,7 @@ const getAllPlants = async (req, res, next) => {
   }
 };
 
-// GET /plants/:id
+// GET /api/plants/:id
 const getOnePlant = async (req, res, next) => {
   try {
     const plant = await Plant.findById(req.params.id)
@@ -29,7 +29,7 @@ const getOnePlant = async (req, res, next) => {
   }
 };
 
-// POST /plants
+// POST /api/plants
 const createPlant = async (req, res, next) => {
   try {
     const newPlant = req.body;
@@ -42,7 +42,7 @@ const createPlant = async (req, res, next) => {
   }
 };
 
-// PATCH /plants/:id
+// PATCH /api/plants/:id
 const updatePlant = async (req, res, next) => {
   try {
     const updatedPlant = await Plant.updateOne(
