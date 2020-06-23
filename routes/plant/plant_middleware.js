@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-const router = require('express').Router();
 const Plant = require('../../models/plant');
 const { ErrorHandler } = require('../../helpers/error');
 
@@ -59,7 +57,9 @@ const updatePlant = async (req, res, next) => {
   }
 };
 
-router.route('/').post(createPlant).get(getAllPlants);
-router.route('/:id').get(getOnePlant).patch(updatePlant);
-
-module.exports = router;
+module.exports = {
+  getAllPlants,
+  getOnePlant,
+  createPlant,
+  updatePlant,
+};

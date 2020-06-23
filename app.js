@@ -3,7 +3,7 @@ const app = express();
 const bodyparser = require('body-parser');
 
 const db = require('./models/db');
-const routes = require('./api/routes');
+const routes = require('./routes');
 const { handleError } = require('./helpers/error');
 
 app.use(bodyparser.urlencoded({ extended: false }));

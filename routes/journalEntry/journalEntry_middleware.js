@@ -1,18 +1,7 @@
-const router = require('express').Router();
 const JournalEntry = require('../../models/journalEntry');
 const { ErrorHandler } = require('../../helpers/error');
 
-const createEntry = async (req, res, next) => {
-  try {
-    const newEntry = req.body;
-    const entry = await JournalEntry(newEntry).save();
-    res.json(entry);
-    return entry;
-  } catch (err) {
-    next(err);
-  }
-};
-
+// GET /api/journal/
 const getAllEntries = async (req, res, next) => {
   try {
     const entries = await JournalEntry.find({})
@@ -26,6 +15,7 @@ const getAllEntries = async (req, res, next) => {
   }
 };
 
+// GET /api/journal/plant
 const getAllEntriesForOnePlant = async (req, res, next) => {
   try {
     const entries = await JournalEntry.find({ plant: req.body.plantId })
@@ -40,6 +30,7 @@ const getAllEntriesForOnePlant = async (req, res, next) => {
   }
 };
 
+// GET /api/journal/:id
 const getOneEntry = async (req, res, next) => {
   try {
     const entry = await JournalEntry.findOne({ _id: req.params.id })
@@ -53,10 +44,21 @@ const getOneEntry = async (req, res, next) => {
   }
 };
 
-router.route('/plant').get(getAllEntriesForOnePlant);
+// POST /api/journal/
+const createEntry = async (req, res, next) => {
+  try {
+    const newEntry = req.body;
+    const entry = await JournalEntry(newEntry).save();
+    res.json(entry);
+    return entry;
+  } catch (err) {
+    next(err);
+  }
+};
 
-router.route('/').post(createEntry).get(getAllEntries);
-
-router.route('/:id').get(getOneEntry);
-
-module.exports = router;
+module.exports = {
+  createEntry,
+  getAllEntries,
+  getAllEntriesForOnePlant,
+  getOneEntry,
+};
