@@ -15,10 +15,10 @@ const getAllEntries = async (req, res, next) => {
   }
 };
 
-// GET /api/journal/plant
+// GET /api/journal/plant/?id=
 const getAllEntriesForOnePlant = async (req, res, next) => {
   try {
-    const entries = await JournalEntry.find({ plant: req.body.plantId })
+    const entries = await JournalEntry.find({ plant: req.query.id })
       .orFail(
         new ErrorHandler(404, 'There are no journal entries for this plant.')
       )
@@ -33,7 +33,7 @@ const getAllEntriesForOnePlant = async (req, res, next) => {
 // GET /api/journal/:id
 const getOneEntry = async (req, res, next) => {
   try {
-    const entry = await JournalEntry.findOne({ _id: req.params.id })
+    const entry = await JournalEntry.findById(req.params.id)
       .orFail(new ErrorHandler(404, 'No journal entries were found.'))
       .populate('plant')
       .exec();
@@ -56,9 +56,41 @@ const createEntry = async (req, res, next) => {
   }
 };
 
+// PATCH /api/journal/:id
+const updateEntry = async (req, res, next) => {
+  try {
+    await JournalEntry.findByIdAndUpdate(req.params.id, req.body, {
+      runValidators: true,
+    })
+      .orFail()
+      .exec();
+    res.send('Your journal entry has been successfully updated.');
+  } catch (err) {
+    next(err);
+  }
+};
+
+// DELETE /api/journal/:id
+const deleteEntry = async (req, res, next) => {
+  try {
+    await JournalEntry.findByIdAndDelete(req.params.id)
+      .orFail(
+        new ErrorHandler(
+          404,
+          'The journal entry you are trying to delete was not found.'
+        )
+      )
+      .exec();
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   createEntry,
   getAllEntries,
   getAllEntriesForOnePlant,
   getOneEntry,
+  updateEntry,
+  deleteEntry,
 };

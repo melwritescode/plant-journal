@@ -35,7 +35,6 @@ const createPlant = async (req, res, next) => {
     res.json(plant);
     return plant;
   } catch (err) {
-    err.status = 400;
     next(err);
   }
 };
@@ -43,11 +42,9 @@ const createPlant = async (req, res, next) => {
 // PATCH /api/plants/:id
 const updatePlant = async (req, res, next) => {
   try {
-    const updatedPlant = await Plant.updateOne(
-      { _id: req.params.id },
-      req.body,
-      { runValidators: true }
-    )
+    await Plant.findByIdAndUpdate(req.params.id, req.body, {
+      runValidators: true,
+    })
       .orFail(new ErrorHandler(422, 'Unable to update plant data.'))
       .exec();
     res.send('Your plant was successfully updated.');
