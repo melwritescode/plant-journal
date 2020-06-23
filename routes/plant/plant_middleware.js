@@ -57,9 +57,28 @@ const updatePlant = async (req, res, next) => {
   }
 };
 
+// DELETE /api/plants/:id
+const deletePlant = async (req, res, next) => {
+  try {
+    const deletedPlant = await Plant.findByIdAndDelete(req.params.id)
+      .orFail(
+        new ErrorHandler(
+          404,
+          'The plant you are trying to delete was not found.'
+        )
+      )
+      .exec();
+    res.send('This plant was successfully deleted.');
+    return deletedPlant;
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getAllPlants,
   getOnePlant,
   createPlant,
   updatePlant,
+  deletePlant,
 };
