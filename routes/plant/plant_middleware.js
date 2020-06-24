@@ -1,5 +1,6 @@
 const Plant = require('../../models/plant');
 const { ErrorHandler } = require('../../helpers/error');
+const createError = require('http-errors');
 
 // GET /api/plants
 const getAllPlants = async (req, res, next) => {
@@ -18,7 +19,7 @@ const getAllPlants = async (req, res, next) => {
 const getOnePlant = async (req, res, next) => {
   try {
     const plant = await Plant.findById(req.params.id)
-      .orFail(new ErrorHandler(422, 'Invalid plant ID'))
+      .orFail(createError.UnprocessableEntity('Invalid plant ID.'))
       .exec();
     res.json(plant);
     return plant;

@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
 
-const db = require('./models/db');
+require('./models/db');
 const routes = require('./routes');
 const { handleError } = require('./helpers/error');
 
@@ -23,5 +23,6 @@ app.use((err, req, res, next) => {
   handleError(err, res);
 });
 
-app.listen(PORT);
-console.log(`Plant Journal is listening on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Plant Journal is listening on port ${PORT}`);
+});
