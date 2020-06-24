@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 const bodyparser = require('body-parser');
+require('dotenv').config();
+
+const PORT = process.env.PORT || 3000;
 
 const db = require('./models/db');
 const routes = require('./routes');
@@ -20,5 +23,5 @@ app.use((err, req, res, next) => {
   handleError(err, res);
 });
 
-app.listen(3000);
-console.log('Plant Journal is listening on port 3000');
+app.listen(PORT);
+console.log(`Plant Journal is listening on port ${PORT}`);
