@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const User = require('../../models/user');
 const { authSchema } = require('../../helpers/validationSchema');
+const { signAccessToken } = require('../../helpers/jwtHelper');
 
 // POST /register
 const registerNewUser = async (req, res, next) => {
@@ -14,15 +15,15 @@ const registerNewUser = async (req, res, next) => {
       );
 
     const newUser = await new User(validatedUser).save();
+    const accessToken = await signAccessToken(newUser.id);
 
-    res.json(newUser);
-
-    return newUser;
+    res.json({ accessToken });
   } catch (err) {
     if (err.isJoi === true) err.statusCode = 422;
     next(err);
   }
 };
+
 // POST /login
 
 // POST /refresh-token

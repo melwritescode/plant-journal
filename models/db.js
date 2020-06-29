@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGODB_URI, {
   dbName: process.env.DB_NAME,
+  useCreateIndex: true,
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
