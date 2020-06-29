@@ -25,6 +25,26 @@ const registerNewUser = async (req, res, next) => {
 };
 
 // POST /login
+const login = async (req, res, next) => {
+  try {
+    const data = await authSchema.validateAsync(req.body);
+    const user = await User.findOne({ email: data.email });
+    if (!user) throw createError.NotFound('User not registered.');
+
+    const isMatch = await user.isCorrectPassword(data.password);
+    if (!isMatch)
+      throw createError.Unauthorized('Username and/or password is incorrect.');
+
+    const accessToken = await signAccessToken(user.id);
+    res.json({ accessToken });
+  } catch (err) {
+    if (err.isJoi === true)
+      return next(
+        createError.BadRequest('Email/password combination is invalid.')
+      );
+    next(err);
+  }
+};
 
 // POST /refresh-token
 
@@ -32,4 +52,5 @@ const registerNewUser = async (req, res, next) => {
 
 module.exports = {
   registerNewUser,
+  login,
 };
