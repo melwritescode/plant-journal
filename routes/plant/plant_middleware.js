@@ -5,7 +5,7 @@ const createError = require('http-errors');
 // GET /api/plants
 const getAllPlants = async (req, res, next) => {
   try {
-    const plants = await Plant.find({})
+    const plants = await Plant.find({ user: req.payload.aud })
       .orFail(new ErrorHandler(404, 'There are no plants in this garden, yet.'))
       .exec();
     res.json(plants);
@@ -18,7 +18,11 @@ const getAllPlants = async (req, res, next) => {
 // GET /api/plants/:id
 const getOnePlant = async (req, res, next) => {
   try {
-    const plant = await Plant.findById(req.params.id)
+    const filter = {
+      _id: req.params.id,
+      user: req.payload.aud,
+    };
+    const plant = await Plant.findOne(filter)
       .orFail(createError.UnprocessableEntity('Invalid plant ID.'))
       .exec();
     res.json(plant);
@@ -31,8 +35,11 @@ const getOnePlant = async (req, res, next) => {
 // POST /api/plants
 const createPlant = async (req, res, next) => {
   try {
-    const newPlant = req.body;
-    const plant = await Plant(newPlant).save();
+    const payload = {
+      ...req.body,
+      user: req.payload.aud,
+    };
+    const plant = await Plant(payload).save();
     res.json(plant);
     return plant;
   } catch (err) {
@@ -43,12 +50,17 @@ const createPlant = async (req, res, next) => {
 // PATCH /api/plants/:id
 const updatePlant = async (req, res, next) => {
   try {
-    await Plant.findByIdAndUpdate(req.params.id, req.body, {
+    const filter = {
+      _id: req.params.id,
+      user: req.payload.aud,
+    };
+    const updatedPlant = await Plant.findOneAndUpdate(filter, req.body, {
       runValidators: true,
+      new: true,
     })
       .orFail(new ErrorHandler(422, 'Unable to update plant data.'))
       .exec();
-    res.send('Your plant was successfully updated.');
+    res.json(updatedPlant);
     return;
   } catch (err) {
     next(err);
@@ -58,7 +70,11 @@ const updatePlant = async (req, res, next) => {
 // DELETE /api/plants/:id
 const deletePlant = async (req, res, next) => {
   try {
-    const deletedPlant = await Plant.findByIdAndDelete(req.params.id)
+    const filter = {
+      _id: req.params.id,
+      user: req.payload.aud,
+    };
+    await Plant.findOneAndDelete(filter)
       .orFail(
         new ErrorHandler(
           404,
@@ -67,7 +83,7 @@ const deletePlant = async (req, res, next) => {
       )
       .exec();
     res.send('This plant was successfully deleted.');
-    return deletedPlant;
+    return;
   } catch (err) {
     next(err);
   }

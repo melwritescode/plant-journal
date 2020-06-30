@@ -1,12 +1,16 @@
 const router = require('express').Router();
 const middleware = require('./plant_middleware');
+const { verifyAccessToken } = require('../../helpers/jwtHelper');
 
-router.route('/').post(middleware.createPlant).get(middleware.getAllPlants);
+router
+  .route('/')
+  .post(verifyAccessToken, middleware.createPlant)
+  .get(verifyAccessToken, middleware.getAllPlants);
 
 router
   .route('/:id')
-  .get(middleware.getOnePlant)
-  .patch(middleware.updatePlant)
-  .delete(middleware.deletePlant);
+  .get(verifyAccessToken, middleware.getOnePlant)
+  .patch(verifyAccessToken, middleware.updatePlant)
+  .delete(verifyAccessToken, middleware.deletePlant);
 
 module.exports = router;

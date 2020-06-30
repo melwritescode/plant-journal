@@ -14,6 +14,11 @@ const plantSchema = new mongoose.Schema(
       required: [true, 'Common name is required.'],
     },
     nativeTo: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+      required: [true, 'Please log in or register.'],
+    },
   },
   {
     timestamps: true,
