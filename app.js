@@ -6,6 +6,7 @@ const bodyparser = require('body-parser');
 const routes = require('./routes');
 const { handleError } = require('./helpers/error');
 const morgan = require('morgan');
+const { verifyAccessToken } = require('./helpers/jwtHelper');
 
 app.use(morgan('dev'));
 
@@ -19,6 +20,9 @@ app.use(express.static('./public'));
 app.use('/auth', routes.auth);
 app.use('/api/plants', routes.plant);
 app.use('/api/journal', routes.journalEntry);
+app.use('/', verifyAccessToken, async (req, res, next) => {
+  res.send('Hello from express');
+});
 
 app.use((err, req, res, next) => {
   handleError(err, res);
