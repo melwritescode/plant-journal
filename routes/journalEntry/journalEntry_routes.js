@@ -1,12 +1,20 @@
 const router = require('express').Router();
 const middleware = require('./journalEntry_middleware');
+const { verifyAccessToken } = require('../../helpers/jwtHelper');
 
 // /api/journal/
-router.route('/plant').get(middleware.getAllEntriesForOnePlant);
-router.route('/').post(middleware.createEntry).get(middleware.getAllEntries);
+router
+  .route('/plant')
+  .get(verifyAccessToken, middleware.getAllEntriesForOnePlant);
+
+router
+  .route('/')
+  .post(middleware.createEntry)
+  .get(verifyAccessToken, middleware.getAllEntries);
+
 router
   .route('/:id')
-  .get(middleware.getOneEntry)
+  .get(verifyAccessToken, middleware.getOneEntry)
   .patch(middleware.updateEntry)
   .delete(middleware.deleteEntry);
 

@@ -4,7 +4,7 @@ const { ErrorHandler } = require('../../helpers/error');
 // GET /api/journal/
 const getAllEntries = async (req, res, next) => {
   try {
-    const entries = await JournalEntry.find({})
+    const entries = await JournalEntry.find({ user: req.payload.aud })
       .orFail(new ErrorHandler(404, 'No journal entries were found.'))
       .populate('plant')
       .exec();
@@ -18,6 +18,10 @@ const getAllEntries = async (req, res, next) => {
 // GET /api/journal/plant/?id=
 const getAllEntriesForOnePlant = async (req, res, next) => {
   try {
+    const filter = {
+      user: req.payload.aud,
+      plant: req.query.id,
+    };
     const entries = await JournalEntry.find({ plant: req.query.id })
       .orFail(
         new ErrorHandler(404, 'There are no journal entries for this plant.')
@@ -33,7 +37,11 @@ const getAllEntriesForOnePlant = async (req, res, next) => {
 // GET /api/journal/:id
 const getOneEntry = async (req, res, next) => {
   try {
-    const entry = await JournalEntry.findById(req.params.id)
+    const filter = {
+      _id: req.params.id,
+      user: req.payload.aud,
+    };
+    const entry = await JournalEntry.findOne(filter)
       .orFail(new ErrorHandler(404, 'No journal entries were found.'))
       .populate('plant')
       .exec();

@@ -13,6 +13,11 @@ const journalEntrySchema = new mongoose.Schema(
       ref: 'plant',
       required: [true, 'A plant must be provided to create a journal entry.'],
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+      required: [true, 'Please log in or register.'],
+    },
   },
   {
     timestamps: true,
