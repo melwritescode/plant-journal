@@ -9,7 +9,7 @@ router
 
 router
   .route('/')
-  .post(middleware.createEntry)
+  .post(verifyAccessToken, middleware.createEntry)
   .get(verifyAccessToken, middleware.getAllEntries);
 
 router

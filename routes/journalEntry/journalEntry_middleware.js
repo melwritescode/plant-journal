@@ -1,4 +1,6 @@
 const JournalEntry = require('../../models/journalEntry');
+const Plant = require('../../models/plant');
+const createError = require('http-errors');
 const { ErrorHandler } = require('../../helpers/error');
 
 // GET /api/journal/
@@ -22,7 +24,7 @@ const getAllEntriesForOnePlant = async (req, res, next) => {
       user: req.payload.aud,
       plant: req.query.id,
     };
-    const entries = await JournalEntry.find({ plant: req.query.id })
+    const entries = await JournalEntry.find(filter)
       .orFail(
         new ErrorHandler(404, 'There are no journal entries for this plant.')
       )
@@ -55,8 +57,20 @@ const getOneEntry = async (req, res, next) => {
 // POST /api/journal/
 const createEntry = async (req, res, next) => {
   try {
-    const newEntry = req.body;
-    const entry = await JournalEntry(newEntry).save();
+    const filter = {
+      _id: req.body.plant,
+      user: req.payload.aud,
+    };
+    const userHasPlant = await Plant.exists(filter);
+
+    if (!userHasPlant) throw createError.Unauthorized();
+
+    const payload = {
+      ...req.body,
+      user: req.payload.aud,
+    };
+
+    const entry = await JournalEntry(payload).save();
     res.json(entry);
     return entry;
   } catch (err) {
