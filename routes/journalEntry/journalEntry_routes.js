@@ -15,7 +15,7 @@ router
 router
   .route('/:id')
   .get(verifyAccessToken, middleware.getOneEntry)
-  .patch(middleware.updateEntry)
-  .delete(middleware.deleteEntry);
+  .patch(verifyAccessToken, middleware.updateEntry)
+  .delete(verifyAccessToken, middleware.deleteEntry);
 
 module.exports = router;

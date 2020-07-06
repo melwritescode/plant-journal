@@ -81,12 +81,18 @@ const createEntry = async (req, res, next) => {
 // PATCH /api/journal/:id
 const updateEntry = async (req, res, next) => {
   try {
-    await JournalEntry.findByIdAndUpdate(req.params.id, req.body, {
+    const filter = {
+      _id: req.params.id,
+      user: req.payload.aud,
+    };
+    const entry = await JournalEntry.findOneAndUpdate(filter, req.body, {
       runValidators: true,
+      new: true,
     })
       .orFail()
       .exec();
-    res.send('Your journal entry has been successfully updated.');
+    res.json(entry);
+    return;
   } catch (err) {
     next(err);
   }
@@ -95,7 +101,12 @@ const updateEntry = async (req, res, next) => {
 // DELETE /api/journal/:id
 const deleteEntry = async (req, res, next) => {
   try {
-    await JournalEntry.findByIdAndDelete(req.params.id)
+    const filter = {
+      _id: req.params.id,
+      user: req.payload.aud,
+    };
+
+    await JournalEntry.findOneAndDelete(filter)
       .orFail(
         new ErrorHandler(
           404,
@@ -103,6 +114,8 @@ const deleteEntry = async (req, res, next) => {
         )
       )
       .exec();
+
+    res.send('This journal entry has been successfully deleted.');
   } catch (err) {
     next(err);
   }
