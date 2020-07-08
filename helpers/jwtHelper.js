@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const createError = require('http-errors');
-const { create } = require('../models/user');
+const client = require('./initRedis');
 
 const signAccessToken = (userId) => {
   return new Promise((resolve, reject) => {
@@ -55,20 +55,40 @@ const signRefreshToken = (userId) => {
         reject(createError.InternalServerError());
         return;
       }
-      resolve(token);
+
+      client.SET(userId, token, 'EX', 365 * 24 * 60 * 60, (err, response) => {
+        if (err) {
+          console.log(err);
+          reject(createError.InternalServerError());
+          return;
+        }
+        resolve(token);
+      });
     });
   });
 };
 
 const verifyRefreshToken = (refreshToken) => {
   return new Promise((resolve, reject) => {
+    // Verify that the refresh token provided is a JWT token with a valid signature
     jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
       (err, payload) => {
         if (err) return reject(createError.Unauthorized());
         const userId = payload.aud;
-        resolve(userId);
+
+        // If the token is valid, check that it matches the most recent refresh token issued, stored in Redis
+        client.GET(userId, (err, response) => {
+          if (err) {
+            console.log(err.message);
+            reject(createError.InternalServerError());
+            return;
+          }
+
+          if (refreshToken === response) return resolve(userId);
+          return reject(createError.Unauthorized());
+        });
       }
     );
   });

@@ -1,5 +1,6 @@
 require('dotenv').config();
 require('./models/db');
+require('./helpers/initRedis');
 const express = require('express');
 const app = express();
 const bodyparser = require('body-parser');
