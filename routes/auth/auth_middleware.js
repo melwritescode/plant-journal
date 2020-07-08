@@ -1,7 +1,12 @@
 const createError = require('http-errors');
 const User = require('../../models/user');
 const { authSchema } = require('../../helpers/validationSchema');
-const { signAccessToken } = require('../../helpers/jwtHelper');
+const {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} = require('../../helpers/jwtHelper');
+const { sign } = require('jsonwebtoken');
 
 // POST /register
 const registerNewUser = async (req, res, next) => {
@@ -16,8 +21,9 @@ const registerNewUser = async (req, res, next) => {
 
     const newUser = await new User(validatedUser).save();
     const accessToken = await signAccessToken(newUser.id);
+    const refreshToken = await signRefreshToken(newUser.id);
 
-    res.json({ accessToken });
+    res.json({ accessToken, refreshToken });
   } catch (err) {
     if (err.isJoi === true) err.statusCode = 422;
     next(err);
@@ -36,7 +42,9 @@ const login = async (req, res, next) => {
       throw createError.Unauthorized('Username and/or password is incorrect.');
 
     const accessToken = await signAccessToken(user.id);
-    res.json({ accessToken });
+    const refreshToken = await signRefreshToken(user.id);
+
+    res.json({ accessToken, refreshToken });
   } catch (err) {
     if (err.isJoi === true)
       return next(
@@ -47,10 +55,25 @@ const login = async (req, res, next) => {
 };
 
 // POST /refresh-token
+const refreshToken = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) throw createError.BadRequest();
+
+    const userId = await verifyRefreshToken(refreshToken);
+    const accessToken = await signAccessToken(userId);
+    const refToken = await signRefreshToken(userId);
+
+    res.json({ accessToken: accessToken, refreshToken: refToken });
+  } catch (err) {
+    next(err);
+  }
+};
 
 // DELETE /logout
 
 module.exports = {
   registerNewUser,
   login,
+  refreshToken,
 };
