@@ -26,7 +26,11 @@ app.use('/', verifyAccessToken, async (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  handleError(err, res);
+  const status = err.status || 500;
+  res.status(status).json({
+    status,
+    message: err.message,
+  });
 });
 
 const PORT = process.env.PORT || 3000;

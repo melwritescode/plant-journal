@@ -1,12 +1,11 @@
 const Plant = require('../models/plant');
-const { ErrorHandler } = require('../helpers/error');
 const createError = require('http-errors');
 
 // GET /api/plants
 const getAllPlants = async (req, res, next) => {
   try {
     const plants = await Plant.find({ user: req.payload.aud })
-      .orFail(new ErrorHandler(404, 'There are no plants in this garden, yet.'))
+      .orFail(createError.NotFound('There are no plants in this garden, yet.'))
       .exec();
     res.json(plants);
     return plants;
@@ -58,7 +57,7 @@ const updatePlant = async (req, res, next) => {
       runValidators: true,
       new: true,
     })
-      .orFail(new ErrorHandler(422, 'Unable to update plant data.'))
+      .orFail(createError.UnprocessableEntity('Unable to update plant data.'))
       .exec();
     res.json(updatedPlant);
     return;
@@ -76,8 +75,7 @@ const deletePlant = async (req, res, next) => {
     };
     await Plant.findOneAndDelete(filter)
       .orFail(
-        new ErrorHandler(
-          404,
+        createError.NotFound(
           'The plant you are trying to delete was not found.'
         )
       )

@@ -1,13 +1,12 @@
 const JournalEntry = require('../Models/journalEntry');
 const Plant = require('../models/plant');
 const createError = require('http-errors');
-const { ErrorHandler } = require('../helpers/error');
 
 // GET /api/journal/
 const getAllEntries = async (req, res, next) => {
   try {
     const entries = await JournalEntry.find({ user: req.payload.aud })
-      .orFail(new ErrorHandler(404, 'No journal entries were found.'))
+      .orFail(createError.NotFound('No journal entries were found.'))
       .populate('plant')
       .exec();
     res.json(entries);
@@ -26,7 +25,7 @@ const getAllEntriesForOnePlant = async (req, res, next) => {
     };
     const entries = await JournalEntry.find(filter)
       .orFail(
-        new ErrorHandler(404, 'There are no journal entries for this plant.')
+        createError.NotFound('There are no journal entries for this plant.')
       )
       .exec();
     res.json(entries);
@@ -44,7 +43,7 @@ const getOneEntry = async (req, res, next) => {
       user: req.payload.aud,
     };
     const entry = await JournalEntry.findOne(filter)
-      .orFail(new ErrorHandler(404, 'No journal entries were found.'))
+      .orFail(createError.NotFound('No journal entries were found.'))
       .populate('plant')
       .exec();
     res.json(entry);
@@ -108,8 +107,7 @@ const deleteEntry = async (req, res, next) => {
 
     await JournalEntry.findOneAndDelete(filter)
       .orFail(
-        new ErrorHandler(
-          404,
+        createError.NotFound(
           'The journal entry you are trying to delete was not found.'
         )
       )
