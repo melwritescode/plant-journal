@@ -1,12 +1,12 @@
 const createError = require('http-errors');
-const User = require('../../models/user');
-const { authSchema } = require('../../helpers/validationSchema');
+const User = require('../models/user');
+const { authSchema } = require('../helpers/validationSchema');
 const {
   signAccessToken,
   signRefreshToken,
   verifyRefreshToken,
-} = require('../../helpers/jwtHelper');
-const client = require('../../helpers/initRedis');
+} = require('../helpers/jwtHelper');
+const client = require('../helpers/initRedis');
 
 // POST /register
 const registerNewUser = async (req, res, next) => {

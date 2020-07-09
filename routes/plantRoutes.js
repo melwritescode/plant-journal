@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const middleware = require('./plant_middleware');
-const { verifyAccessToken } = require('../../helpers/jwtHelper');
+const middleware = require('../controllers/plantController');
+const { verifyAccessToken } = require('../helpers/jwtHelper');
 
 router
   .route('/')

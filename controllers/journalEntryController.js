@@ -1,7 +1,7 @@
-const JournalEntry = require('../../models/journalEntry');
-const Plant = require('../../models/plant');
+const JournalEntry = require('../Models/journalEntry');
+const Plant = require('../models/plant');
 const createError = require('http-errors');
-const { ErrorHandler } = require('../../helpers/error');
+const { ErrorHandler } = require('../helpers/error');
 
 // GET /api/journal/
 const getAllEntries = async (req, res, next) => {

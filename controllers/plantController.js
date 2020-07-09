@@ -1,5 +1,5 @@
-const Plant = require('../../models/plant');
-const { ErrorHandler } = require('../../helpers/error');
+const Plant = require('../models/plant');
+const { ErrorHandler } = require('../helpers/error');
 const createError = require('http-errors');
 
 // GET /api/plants

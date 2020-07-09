@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const middleware = require('./journalEntry_middleware');
-const { verifyAccessToken } = require('../../helpers/jwtHelper');
+const middleware = require('../controllers/journalEntryController');
+const { verifyAccessToken } = require('../helpers/jwtHelper');
 
 // /api/journal/
 router
