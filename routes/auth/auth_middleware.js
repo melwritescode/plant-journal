@@ -6,7 +6,7 @@ const {
   signRefreshToken,
   verifyRefreshToken,
 } = require('../../helpers/jwtHelper');
-const { sign } = require('jsonwebtoken');
+const client = require('../../helpers/initRedis');
 
 // POST /register
 const registerNewUser = async (req, res, next) => {
@@ -71,9 +71,26 @@ const refreshToken = async (req, res, next) => {
 };
 
 // DELETE /logout
+const logout = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) throw createError.BadRequest();
+    const userId = await verifyRefreshToken(refreshToken);
+    client.DEL(userId, (err, val) => {
+      if (err) {
+        console.log(err);
+        throw createError.InternalServerError();
+      }
+      res.sendStatus(204);
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
   registerNewUser,
   login,
   refreshToken,
+  logout,
 };
