@@ -1,21 +1,21 @@
 const router = require('express').Router();
-const middleware = require('../controllers/journalEntryController');
+const controller = require('../controllers/journalEntryController');
 const { verifyAccessToken } = require('../helpers/jwtHelper');
 
 // /api/journal/
 router
   .route('/plant')
-  .get(verifyAccessToken, middleware.getAllEntriesForOnePlant);
+  .get(verifyAccessToken, controller.getAllEntriesForOnePlant);
 
 router
   .route('/')
-  .post(verifyAccessToken, middleware.createEntry)
-  .get(verifyAccessToken, middleware.getAllEntries);
+  .post(verifyAccessToken, controller.createEntry)
+  .get(verifyAccessToken, controller.getAllEntries);
 
 router
   .route('/:id')
-  .get(verifyAccessToken, middleware.getOneEntry)
-  .patch(verifyAccessToken, middleware.updateEntry)
-  .delete(verifyAccessToken, middleware.deleteEntry);
+  .get(verifyAccessToken, controller.getOneEntry)
+  .patch(verifyAccessToken, controller.updateEntry)
+  .delete(verifyAccessToken, controller.deleteEntry);
 
 module.exports = router;
